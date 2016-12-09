@@ -35,7 +35,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
         boolean shouldAttachImmediately = false;
 
-        View view = inflater.inflate(layoutIdForMoviePoster,parent,shouldAttachImmediately);
+        View view = inflater.inflate(layoutIdForMoviePoster, parent, shouldAttachImmediately);
 
         mPosterImageView = (ImageView) view.findViewById(R.id.movie_poster_iv);
         mContext = view.getContext();
@@ -51,9 +51,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
-        if(holder.isRecyclable()) {
+        if (holder.isRecyclable()) {
             String posterUrlString = mMovieList[position].getPosterUrl().toString();
-            Picasso.with(mContext).load(posterUrlString).into(mPosterImageView);
+            Picasso.with(mContext).load(posterUrlString).into(holder.getPosterImageView());
 
             Log.v("MovieAdapter", "The following movie was just bound: " + mMovieList[position].getMovieName());
         } else
@@ -63,23 +63,28 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public int getItemCount() {
-        if(mMovieList==null) return 0;
+        if (mMovieList == null) return 0;
         return mMovieList.length;
     }
 
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        public final ImageView mPosterImageView;
+        private final ImageView mPosterImageView;
 
 
         public MovieAdapterViewHolder(View itemView) {
             super(itemView);
             mPosterImageView = (ImageView) itemView.findViewById(R.id.movie_poster_iv);
         }
+
+        public ImageView getPosterImageView() {
+            return this.mPosterImageView;
+        }
     }
 
-    public void setMovieData(Movie[] movieData){
+    public void setMovieData(Movie[] movieData) {
         mMovieList = movieData;
         notifyDataSetChanged();
     }
+
 }
