@@ -12,13 +12,17 @@ public class Movie {
     private URL mPosterUrl;
     private long mPopularity;
     private long mRating;
+    private String mMovieSynopsis;
+    private String mReleaseDate;
 
 
-    public Movie(String movieName, URL posterUrl, long popularity, long rating){
+    public Movie(String movieName, URL posterUrl, long popularity, long rating, String movieSynopsis, String releaseDate){
         mMovieName = movieName;
         mPosterUrl = posterUrl;
         mPopularity = popularity;
         mRating = rating;
+        mMovieSynopsis = movieSynopsis;
+        mReleaseDate = releaseDate;
     }
 
     public String getMovieName() {
@@ -33,7 +37,15 @@ public class Movie {
         return mPopularity;
     }
 
+    public String getMovieSynopsis(){
+        return mMovieSynopsis;
+    }
+
     public long getRating(){
         return mRating;
+    }
+
+    public String getReleaseDate(){
+        return mReleaseDate;
     }
 }

@@ -8,10 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.view.View.OnClickListener;
 
 import com.example.android.popularmovies.models.Movie;
 import com.example.android.popularmovies.R;
 import com.squareup.picasso.Picasso;
+
+import static android.R.attr.onClick;
 
 /**
  * Created by kristenwoodward on 12/7/16.
@@ -20,11 +23,18 @@ import com.squareup.picasso.Picasso;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
     private Movie[] mMovieList;
-    private ImageView mPosterImageView;
+    //private ImageView mPosterImageView;
     private Context mContext;
     //private TextView mTempTv;
+    private ListItemClickListener mOnItemClickListener;
 
-    public MovieAdapter() {
+
+    public interface ListItemClickListener{
+        void onItemClickListener(int position);
+    }
+
+    public MovieAdapter(ListItemClickListener listItemClickListener) {
+        mOnItemClickListener = listItemClickListener;
     }
 
     @Override
@@ -37,7 +47,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
         View view = inflater.inflate(layoutIdForMoviePoster, parent, shouldAttachImmediately);
 
-        mPosterImageView = (ImageView) view.findViewById(R.id.movie_poster_iv);
+        //mPosterImageView = (ImageView) view.findViewById(R.id.movie_poster_iv);
         mContext = view.getContext();
         //mTempTv = (TextView) view.findViewById(R.id.temporary_tv);
 
@@ -67,7 +77,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         return mMovieList.length;
     }
 
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
 
         private final ImageView mPosterImageView;
 
@@ -75,10 +85,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         public MovieAdapterViewHolder(View itemView) {
             super(itemView);
             mPosterImageView = (ImageView) itemView.findViewById(R.id.movie_poster_iv);
+            mPosterImageView.setOnClickListener(this);
         }
 
         public ImageView getPosterImageView() {
             return this.mPosterImageView;
+        }
+
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            mOnItemClickListener.onItemClickListener(position);
+
         }
     }
         public void setMovieData(Movie[] movieData) {

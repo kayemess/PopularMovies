@@ -37,6 +37,7 @@ public class MovieJsonUtils {
         final String TMD_OVERVIEW = "overview";
         final String TMD_RELEASE_DATE = "release_date";
         final String TMD_TITLE = "original_title";
+        final String TMD_SYNOPSIS = "overview";
 
         //movie popularity
         final String TMD_POPULARITY = "popularity";
@@ -79,12 +80,14 @@ public class MovieJsonUtils {
             String movieTitle = movie.getString(TMD_TITLE);
             long movieRating = movie.getLong(TMD_RATING);
             long moviePopularity = movie.getLong(TMD_POPULARITY);
+            String movieSynopsis = movie.getString(TMD_OVERVIEW);
+            String movieReleaseDate = movie.getString(TMD_RELEASE_DATE);
 
             String moviePosterPath = movie.getString(TMD_POSTER_PATH);
 
             URL moviePosterUrl = buildImageURL(moviePosterPath);
 
-            parsedMovieData[i] = new Movie(movieTitle, moviePosterUrl, moviePopularity, movieRating);
+            parsedMovieData[i] = new Movie(movieTitle, moviePosterUrl, moviePopularity, movieRating, movieSynopsis, movieReleaseDate);
         }
 
         return parsedMovieData;

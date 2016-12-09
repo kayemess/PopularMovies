@@ -35,7 +35,6 @@ public class NetworkUtils {
     // param for image size
     // options: "w92", "w154", "w185", "w342", "w500", "w780", or "original"
     final static String POSTER_IMAGE_SIZE = "w500";
-    //final static String API_KEY =
     final static String API_PARAM = "api_key";
 
     public static URL buildApiUrl(String filter_order, String apiKey){
