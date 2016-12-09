@@ -81,10 +81,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             return this.mPosterImageView;
         }
     }
-
-    public void setMovieData(Movie[] movieData) {
-        mMovieList = movieData;
-        notifyDataSetChanged();
-    }
+        public void setMovieData(Movie[] movieData) {
+            mMovieList = movieData;
+            notifyDataSetChanged();
+        }
 
 }
