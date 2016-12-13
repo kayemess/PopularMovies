@@ -30,6 +30,7 @@ public class NetworkUtils {
     // The API will return a relative path, for example: “/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg”
     // This will need to be concatenated on to the base URL with a parameter for image size, for example:
     // http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg
+    // Actual image URL is built in MovieJsonUtils
     public static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
 
     // param for image size

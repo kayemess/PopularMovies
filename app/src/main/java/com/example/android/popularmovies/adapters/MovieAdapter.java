@@ -23,9 +23,7 @@ import static android.R.attr.onClick;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
     private Movie[] mMovieList;
-    //private ImageView mPosterImageView;
     private Context mContext;
-    //private TextView mTempTv;
     private ListItemClickListener mOnItemClickListener;
 
 
@@ -47,9 +45,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
         View view = inflater.inflate(layoutIdForMoviePoster, parent, shouldAttachImmediately);
 
-        //mPosterImageView = (ImageView) view.findViewById(R.id.movie_poster_iv);
         mContext = view.getContext();
-        //mTempTv = (TextView) view.findViewById(R.id.temporary_tv);
 
         return new MovieAdapterViewHolder(view);
     }
@@ -65,10 +61,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             String posterUrlString = mMovieList[position].getPosterUrl().toString();
             Picasso.with(mContext).load(posterUrlString).into(holder.getPosterImageView());
 
-            Log.v("MovieAdapter", "The following movie was just bound: " + mMovieList[position].getMovieName());
         } else
             return;
-        //mTempTv.setText(posterUrlString);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        Movie movie = mMovieList[position];
+        return (movie.getMovieName() + movie.getPosterUrl()).hashCode();
     }
 
     @Override
@@ -103,5 +103,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             mMovieList = movieData;
             notifyDataSetChanged();
         }
+
 
 }

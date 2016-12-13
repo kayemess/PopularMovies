@@ -41,7 +41,7 @@ public class MovieDetails extends AppCompatActivity {
         if(launchDetailsIntent.hasExtra("movieRating")){
             mRating = launchDetailsIntent.getStringExtra("movieRating");
             TextView movieRatingTV = (TextView) findViewById(R.id.details_rating_tv);
-            movieRatingTV.setText(mRating);
+            movieRatingTV.setText(mRating + getString(R.string.rating_denominator));
         }
 
         if(launchDetailsIntent.hasExtra("moviePoster")){
@@ -53,7 +53,7 @@ public class MovieDetails extends AppCompatActivity {
         if(launchDetailsIntent.hasExtra("movieReleaseDate")){
             mReleaseDate = launchDetailsIntent.getStringExtra("movieReleaseDate");
             TextView releaseDateTV = (TextView) findViewById(R.id.details_release_date_tv);
-            releaseDateTV.setText(mReleaseDate);
+            releaseDateTV.setText(getString(R.string.released_on) + " " + mReleaseDate);
         }
 
         if(launchDetailsIntent.hasExtra("movieSynopsis")){

@@ -3,12 +3,17 @@
 
     <!-- API Keys -->
     <!-- theMovieDatabase, v3 auth -->
-    <string name="api_key">74ed321b4814256e3d029c9005696147</string>
+    <string name="api_key">API Key goes here</string>
 
     <!-- For menu items -->
     <string name="most_popular">Most Popular</string>
     <string name="top_rated">Top Rated</string>
 
     <!-- Error message -->
-    <string name="error_message">Sorry, can\'t load movies right now! Tap to retry.</string>
+    <string name="error_message">Sorry, can\'t load movies right now! Try again later.</string>
+
+    <!-- For movie details page -->
+    <string name="released_on">Originally released</string>
+    <string name="rating">Viewer rating</string>
+    <string name="rating_denominator">"/10"</string>
 </resources>

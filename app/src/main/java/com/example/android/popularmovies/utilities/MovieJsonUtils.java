@@ -51,24 +51,6 @@ public class MovieJsonUtils {
 
         JSONObject movieJson = new JSONObject(movieJsonStr);
 
-        //is there an error?
-        /**
-        if (movieJson.has(OWM_MESSAGE_CODE)){
-            int errorCode = movieJson.getInt(OWM_MESSAGE_CODE);
-
-            switch (errorCode) {
-                case HttpURLConnection.HTTP_OK:
-                    break;
-                case HttpURLConnection.HTTP_NOT_FOUND:
-                    /* Location invalid
-                    return null;
-                default:
-                    /* Server probably down
-                    return null;
-            }
-        }
-         */
-
         JSONArray movieArray = movieJson.getJSONArray(TMD_LIST);
 
         parsedMovieData = new Movie[movieArray.length()];

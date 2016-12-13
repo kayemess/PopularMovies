@@ -33,6 +33,8 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity implements MovieAdapter.ListItemClickListener {
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
+    private static final String FILTER_SELECTION = "filterSelection";
+    private static final String RECYCLER_VIEW = "recyclerView";
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
     private ProgressBar mProgressBar;
     private LinearLayout mErrorMessageView;
+
+    private Bundle mState = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +69,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         mRecyclerView.setHasFixedSize(true);
 
         mMovieAdapter = new MovieAdapter(this);
-        //mMovieAdapter.setHasStableIds(true); makes it so that posters don't load on app launch?
+        mMovieAdapter.setHasStableIds(true);
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
         new FetchMovieData().execute(mFilterOptions);
+
+        if(savedInstanceState != null){
+            Parcelable savedRecyclerViewState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerViewState);
+        }
 
     }
 
