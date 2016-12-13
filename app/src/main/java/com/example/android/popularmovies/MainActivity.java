@@ -169,9 +169,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mProgressBar.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.INVISIBLE);
-            Log.v("main,onPreExecute","preExecute executed");
+            //mProgressBar.setVisibility(View.VISIBLE);
+            //mRecyclerView.setVisibility(View.INVISIBLE);
+            //Log.v("main,onPreExecute","preExecute executed");
         }
 
         @Override
