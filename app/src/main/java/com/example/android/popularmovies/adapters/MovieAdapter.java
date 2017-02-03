@@ -2,19 +2,15 @@ package com.example.android.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.view.View.OnClickListener;
 
 import com.example.android.popularmovies.models.Movie;
 import com.example.android.popularmovies.R;
 import com.squareup.picasso.Picasso;
-
-import static android.R.attr.onClick;
 
 /**
  * Created by kristenwoodward on 12/7/16.
@@ -38,7 +34,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutIdForMoviePoster = R.layout.movie_poster;
+        int layoutIdForMoviePoster = R.layout.single_poster;
         LayoutInflater inflater = LayoutInflater.from(context);
 
         boolean shouldAttachImmediately = false;
@@ -58,7 +54,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
         if (holder.isRecyclable()) {
-            String posterUrlString = mMovieList[position].getPosterUrl().toString();
+            String posterUrlString = mMovieList[position].getPosterPath();
             Picasso.with(mContext).load(posterUrlString).into(holder.getPosterImageView());
 
         } else
@@ -68,7 +64,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public long getItemId(int position) {
         Movie movie = mMovieList[position];
-        return (movie.getMovieName() + movie.getPosterUrl()).hashCode();
+        return (movie.getMovieName() + movie.getPosterPath()).hashCode();
     }
 
     @Override

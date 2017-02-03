@@ -15,6 +15,7 @@ import java.net.URL;
 
 import static com.example.android.popularmovies.utilities.NetworkUtils.BASE_IMAGE_URL;
 import static com.example.android.popularmovies.utilities.NetworkUtils.POSTER_IMAGE_SIZE;
+import static com.example.android.popularmovies.utilities.NetworkUtils.buildImageURL;
 
 /**
  * Created by kristenwoodward on 12/7/16.
@@ -34,10 +35,10 @@ public class MovieJsonUtils {
         //movie attributes
         final String TMD_POSTER_PATH = "poster_path";
         final String TMD_ADULT = "adult";
-        final String TMD_OVERVIEW = "overview";
         final String TMD_RELEASE_DATE = "release_date";
         final String TMD_TITLE = "original_title";
         final String TMD_SYNOPSIS = "overview";
+        final String TMD_MOVIE_ID = "id";
 
         //movie popularity
         final String TMD_POPULARITY = "popularity";
@@ -62,39 +63,17 @@ public class MovieJsonUtils {
             String movieTitle = movie.getString(TMD_TITLE);
             long movieRating = movie.getLong(TMD_RATING);
             long moviePopularity = movie.getLong(TMD_POPULARITY);
-            String movieSynopsis = movie.getString(TMD_OVERVIEW);
+            String movieSynopsis = movie.getString(TMD_SYNOPSIS);
             String movieReleaseDate = movie.getString(TMD_RELEASE_DATE);
+            String movieId = movie.getString(TMD_MOVIE_ID);
 
             String moviePosterPath = movie.getString(TMD_POSTER_PATH);
 
-            URL moviePosterUrl = buildImageURL(moviePosterPath);
+            URL moviePosterUrl = NetworkUtils.buildImageURL(moviePosterPath);
 
-            parsedMovieData[i] = new Movie(movieTitle, moviePosterUrl, moviePopularity, movieRating, movieSynopsis, movieReleaseDate);
+            parsedMovieData[i] = new Movie(movieTitle, moviePosterUrl.toString(), moviePopularity, movieRating, movieSynopsis, movieReleaseDate, movieId);
         }
 
         return parsedMovieData;
-    }
-
-    /**
-     * Builds a URL used to access the movie poster image
-     * @param imagePath is the relative path to the specific movie poster
-     * @return the full URL to access the movie poster
-     */
-    public static URL buildImageURL(String imagePath){
-        Uri builtURI = Uri.parse(BASE_IMAGE_URL).buildUpon()
-                .appendPath(POSTER_IMAGE_SIZE)
-                .appendEncodedPath(imagePath)
-                .build();
-
-        URL url = null;
-
-        try { url = new URL(builtURI.toString()); }
-        catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        Log.v(TAG, "Built URI " + url);
-
-        return url;
     }
 }

@@ -1,5 +1,7 @@
 package com.example.android.popularmovies.models;
 
+import android.support.annotation.Nullable;
+
 import java.net.URL;
 
 /**
@@ -9,28 +11,30 @@ import java.net.URL;
 public class Movie {
 
     private String mMovieName;
-    private URL mPosterUrl;
+    private String mPosterPath;
     private long mPopularity;
     private long mRating;
     private String mMovieSynopsis;
     private String mReleaseDate;
+    private String mMovieId;
 
 
-    public Movie(String movieName, URL posterUrl, long popularity, long rating, String movieSynopsis, String releaseDate){
+    public Movie(String movieName, String posterPath, @Nullable long popularity, long rating, String movieSynopsis, String releaseDate, String movieId){
         mMovieName = movieName;
-        mPosterUrl = posterUrl;
+        mPosterPath = posterPath;
         mPopularity = popularity;
         mRating = rating;
         mMovieSynopsis = movieSynopsis;
         mReleaseDate = releaseDate;
+        mMovieId = movieId;
     }
 
     public String getMovieName() {
         return mMovieName;
     }
 
-    public URL getPosterUrl() {
-        return mPosterUrl;
+    public String getPosterPath() {
+        return mPosterPath;
     }
 
     public long getPopularity(){
@@ -48,4 +52,6 @@ public class Movie {
     public String getReleaseDate(){
         return mReleaseDate;
     }
+
+    public String getMovieId() { return mMovieId; }
 }
