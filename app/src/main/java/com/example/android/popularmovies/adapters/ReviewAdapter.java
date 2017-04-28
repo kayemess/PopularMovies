@@ -22,7 +22,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     @Override
     public ReviewAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutIdForTrailer = R.layout.review_detail;
+        int layoutIdForTrailer = R.layout.fragment_review_detail;
         LayoutInflater inflater = LayoutInflater.from(context);
 
         boolean shouldAttachImmediately = false;

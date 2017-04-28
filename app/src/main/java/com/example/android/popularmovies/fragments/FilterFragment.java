@@ -1,7 +1,6 @@
 package com.example.android.popularmovies.fragments;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,9 +14,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.android.popularmovies.MovieDetailsActivity;
+import com.example.android.popularmovies.ui.MovieDetailsActivity;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapters.CursorAdapter;
 import com.example.android.popularmovies.adapters.FilterAdapter;
@@ -74,7 +72,7 @@ public class FilterFragment extends Fragment implements MovieAdapter.ListItemCli
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.movie_posters, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
@@ -93,7 +91,7 @@ public class FilterFragment extends Fragment implements MovieAdapter.ListItemCli
                     = new GridLayoutManager(getActivity(), 3);
         }
 
-        // drop RecyclerView into a GridLayout in activity_main.xml, and let's RecyclerView know that all elements
+        // drop RecyclerView into a GridLayout in activity_movie_liste_list.xml, and let's RecyclerView know that all elements
         // will have a fixed size
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);

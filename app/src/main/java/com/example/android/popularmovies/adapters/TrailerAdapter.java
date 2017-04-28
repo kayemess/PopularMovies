@@ -32,7 +32,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieTra
     @Override
     public MovieTrailerAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutIdForTrailer = R.layout.trailer_detail;
+        int layoutIdForTrailer = R.layout.fragment_trailer_detail;
         LayoutInflater inflater = LayoutInflater.from(context);
 
         boolean shouldAttachImmediately = false;

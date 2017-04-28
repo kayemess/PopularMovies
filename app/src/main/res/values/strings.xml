@@ -3,7 +3,7 @@
 
     <!-- API Keys -->
     <!-- theMovieDatabase, v3 auth -->
-    <string name="api_key">API KEY</string>
+    <string name="api_key">74ed321b4814256e3d029c9005696147</string>
 
     <!-- For menu items -->
     <string name="most_popular">Most Popular</string>
