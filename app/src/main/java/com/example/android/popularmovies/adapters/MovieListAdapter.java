@@ -46,8 +46,6 @@ public class MovieListAdapter extends FragmentPagerAdapter {
 
     @Override
     public MovieListFragment getItem(int position) {
-        Bundle args = new Bundle();
-
         switch (position) {
             case 0: return mPopularFrag;
             case 1: return mTopRatedFrag;
@@ -80,6 +78,9 @@ public class MovieListAdapter extends FragmentPagerAdapter {
         int currentPage = args.getInt(FILTER_SELECTION);
 
         if(currentPage == 2){
+            // POSITION_NONE causes favorites page to reload if on favorites... in case a movie has been removed from faves list
+            // side effect is that the page flickers if movie list hasn't changed
+            // TODO: check to see if favorites list has changed; if it hasn't, return POSITION_UNCHANGED, otherwise POSITION_NONE
             return POSITION_NONE;
         } else {
             return POSITION_UNCHANGED;

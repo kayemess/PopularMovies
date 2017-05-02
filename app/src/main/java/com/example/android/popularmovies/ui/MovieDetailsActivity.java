@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuPresenter;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
@@ -31,6 +33,7 @@ import com.example.android.popularmovies.models.Trailer;
 import com.example.android.popularmovies.utilities.CustomLinearLayoutManager;
 import com.example.android.popularmovies.utilities.DateUtils;
 import com.example.android.popularmovies.utilities.NetworkUtils;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
@@ -85,8 +88,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
         setMovieDetailsFromIntent(getIntent());
 
-        scheduleStartPostponedTransition(mPosterImageView);
-
         if (!mMovieId.equals("")) {
             setUpTrailerList();
             setUpReviewsList();
@@ -103,13 +104,15 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
     private void setMovieDetailsFromIntent(Intent intent){
         if (intent.hasExtra(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE)) {
+            mTitle = intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE);
             TextView movieTitleTV = (TextView) findViewById(R.id.details_movie_title_tv);
-            movieTitleTV.setText(intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE));
+            movieTitleTV.setText(mTitle);
         }
 
         if (intent.hasExtra(MovieContract.MovieEntry.COLUMN_MOVIE_RATING)) {
+            mRating = intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_RATING);
             TextView movieRatingTV = (TextView) findViewById(R.id.details_rating_tv);
-            movieRatingTV.setText(intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_RATING) + getString(R.string.rating_denominator));
+            movieRatingTV.setText(mRating + getString(R.string.rating_denominator));
         }
 
         if (intent.hasExtra(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE)) {
@@ -125,8 +128,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         }
 
         if (intent.hasExtra(MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS)) {
+            mSynopsis = intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS);
             TextView movieSynopsisTV = (TextView) findViewById(R.id.details_movie_synopsis_tv);
-            movieSynopsisTV.setText(intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS));
+            movieSynopsisTV.setText(mSynopsis);
         }
 
         if (intent.hasExtra(MovieContract.MovieEntry.COLUMN_MOVIE_ID)) {
@@ -135,7 +139,17 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
         if (intent.hasExtra(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER)) {
             mPosterImageView.setTransitionName(createTransitionName());
-            Picasso.with(this).load(intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER)).into(mPosterImageView);
+            Picasso.with(this).load(intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER)).into(mPosterImageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    scheduleStartPostponedTransition(mPosterImageView);
+                }
+
+                @Override
+                public void onError() {
+                    Picasso.with(getBaseContext()).cancelRequest(mPosterImageView);
+                }
+            });
         }
     }
 
