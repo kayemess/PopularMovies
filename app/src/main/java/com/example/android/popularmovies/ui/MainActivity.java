@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.adapters.FilterAdapter;
+import com.example.android.popularmovies.adapters.MovieListAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
-        final FilterAdapter adapter = new FilterAdapter(this, getSupportFragmentManager());
+        final MovieListAdapter adapter = new MovieListAdapter(this, getSupportFragmentManager());
 
         viewPager.setAdapter(adapter);
 

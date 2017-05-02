@@ -30,15 +30,20 @@ public class CursorAdapter {
             cursor.moveToPosition(position);
 
             String movieTitle = cursor.getString(titleIndex);
-            String movieId = cursor.getString(idIndex);
+            String moviePoster = cursor.getString(posterIndex);
+            int movieRating = cursor.getInt(ratingIndex);
             String movieSynopsis = cursor.getString(synopsisIndex);
             String movieReleaseDate = cursor.getString(releaseDateIndex);
-            int movieRating = cursor.getInt(ratingIndex);
-            String moviePoster = cursor.getString(posterIndex);
+            String movieId = cursor.getString(idIndex);
 
-            currentMovie = new Movie(movieTitle,moviePoster,movieRating,movieRating,movieSynopsis,movieReleaseDate,movieId);
-
-            listOfFavorites[position] = currentMovie;
+            listOfFavorites[position] = new Movie(
+                    movieTitle,
+                    moviePoster,
+                    movieRating,
+                    movieRating,
+                    movieSynopsis,
+                    movieReleaseDate,
+                    movieId);
 
         }
 

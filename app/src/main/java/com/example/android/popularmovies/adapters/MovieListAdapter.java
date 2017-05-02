@@ -2,38 +2,36 @@ package com.example.android.popularmovies.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.view.ViewGroup;
 
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.fragments.FilterFragment;
+import com.example.android.popularmovies.fragments.MovieListFragment;
 
 /**
  * Created by kristenwoodward on 1/26/17.
  */
 
-public class FilterAdapter extends FragmentPagerAdapter {
+public class MovieListAdapter extends FragmentPagerAdapter {
 
     private Context mContext;
     private final static String FILTER_SELECTION = "filterSelection";
 
-    private FilterFragment mFavoritesFrag;
-    private FilterFragment mTopRatedFrag;
-    private FilterFragment mPopularFrag;
+    private MovieListFragment mFavoritesFrag;
+    private MovieListFragment mTopRatedFrag;
+    private MovieListFragment mPopularFrag;
 
     private Bundle mFavoritesBundleArgs = new Bundle();
     private Bundle mTopRatedBundleArgs = new Bundle();
     private Bundle mPopularBundleArgs = new Bundle();
 
-    public FilterAdapter(Context context, FragmentManager fm) {
+    public MovieListAdapter(Context context, FragmentManager fm) {
         super(fm);
         mContext = context;
 
-        mFavoritesFrag = new FilterFragment(this);
-        mTopRatedFrag = new FilterFragment(this);
-        mPopularFrag = new FilterFragment(this);
+        mFavoritesFrag = new MovieListFragment(this);
+        mTopRatedFrag = new MovieListFragment(this);
+        mPopularFrag = new MovieListFragment(this);
 
         mPopularBundleArgs.putInt(FILTER_SELECTION, 0);
         mPopularFrag.setArguments(mPopularBundleArgs);
@@ -47,7 +45,7 @@ public class FilterAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public FilterFragment getItem(int position) {
+    public MovieListFragment getItem(int position) {
         Bundle args = new Bundle();
 
         switch (position) {
@@ -76,9 +74,11 @@ public class FilterAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        FilterFragment currentFrag = (FilterFragment) object;
+        MovieListFragment currentFrag = (MovieListFragment) object;
         Bundle args = currentFrag.getArguments();
+
         int currentPage = args.getInt(FILTER_SELECTION);
+
         if(currentPage == 2){
             return POSITION_NONE;
         } else {

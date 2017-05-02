@@ -1,6 +1,9 @@
 package com.example.android.popularmovies.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +27,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
 
     public interface ListItemClickListener{
-        void onItemClickListener(int position);
+        void onItemClickListener(int position, View posterView, String transitionName);
     }
 
     public MovieAdapter(ListItemClickListener listItemClickListener) {
@@ -56,9 +59,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         if (holder.isRecyclable()) {
             String posterUrlString = mMovieList[position].getPosterPath();
             Picasso.with(mContext).load(posterUrlString).into(holder.getPosterImageView());
-
+            holder.getPosterImageView().setTransitionName(createTransitionName(position));
         } else
             return;
+    }
+
+    private String createTransitionName(int position){
+        return mContext.getString(R.string.poster_transition_name) + mMovieList[position].getMovieId();
     }
 
     @Override
@@ -91,7 +98,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            mOnItemClickListener.onItemClickListener(position);
+            mOnItemClickListener.onItemClickListener(position, mPosterImageView, mPosterImageView.getTransitionName());
 
         }
     }

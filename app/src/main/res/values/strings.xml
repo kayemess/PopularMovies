@@ -24,6 +24,8 @@
     <string name="trailers_title">Trailers</string>
     <string name="reviews_title">Reviews</string>
 
+    <string name="poster_transition_name" translatable="false">poster_transition_name</string>
+
     <!-- Content authority -->
     <string name="content_authority">com.example.android.popularmovies</string>
 </resources>

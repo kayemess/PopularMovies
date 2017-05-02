@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,10 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.data.MovieProvider;
 import com.example.android.popularmovies.ui.MovieDetailsActivity;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapters.CursorAdapter;
-import com.example.android.popularmovies.adapters.FilterAdapter;
+import com.example.android.popularmovies.adapters.MovieListAdapter;
 import com.example.android.popularmovies.adapters.MovieAdapter;
 import com.example.android.popularmovies.data.MovieContract;
 import com.example.android.popularmovies.models.Movie;
@@ -34,18 +36,16 @@ import java.net.URL;
  * Created by kristenwoodward on 1/26/17.
  */
 
-public class FilterFragment extends Fragment implements MovieAdapter.ListItemClickListener {
+public class MovieListFragment extends Fragment implements MovieAdapter.ListItemClickListener {
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
     private static final String FILTER_SELECTION = "filterSelection";
-    private static final String RECYCLER_VIEW = "recyclerView";
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private Movie[] mMovieList;
 
     private TextView mAddFavoritesTv;
-    //private boolean mFavoritesChanged = true;
 
     //String[] that corresponds to menu filter options
     public String[] mFilterOptions = {"popular/","top_rated/",""};
@@ -57,14 +57,14 @@ public class FilterFragment extends Fragment implements MovieAdapter.ListItemCli
 
     private Bundle mState = null;
 
-    private FilterAdapter mFilterAdapter;
+    private MovieListAdapter mMovieListAdapter;
 
-    public FilterFragment() {
+    public MovieListFragment() {
         //required public constructor
     }
 
-    public FilterFragment(FilterAdapter adapter){
-        mFilterAdapter = adapter;
+    public MovieListFragment(MovieListAdapter adapter){
+        mMovieListAdapter = adapter;
     }
 
     @Override
@@ -80,18 +80,16 @@ public class FilterFragment extends Fragment implements MovieAdapter.ListItemCli
         mAddFavoritesTv = (TextView) rootView.findViewById(R.id.need_to_favorite_tv);
 
         // create a GridLayout with two columns
-        int orientation = getResources().getConfiguration().orientation;
         int screenWidth = getResources().getConfiguration().screenWidthDp;
 
         GridLayoutManager layoutManager
                     = new GridLayoutManager(getActivity(), 2);
-        //if(orientation == Configuration.ORIENTATION_LANDSCAPE)
         if(screenWidth > 500){
             layoutManager
                     = new GridLayoutManager(getActivity(), 3);
         }
 
-        // drop RecyclerView into a GridLayout in activity_movie_liste_list.xml, and let's RecyclerView know that all elements
+        // drop RecyclerView into a GridLayout in activity_movie_list.xml, and lets RecyclerView know that all elements
         // will have a fixed size
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -131,26 +129,29 @@ public class FilterFragment extends Fragment implements MovieAdapter.ListItemCli
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 1){
-            if(mFilterAdapter != null) {
-                mFilterAdapter.notifyDataSetChanged();
+            if(mMovieListAdapter != null) {
+                mMovieListAdapter.notifyDataSetChanged();
             }
         }
     }
 
     @Override
-    public void onItemClickListener(int position) {
+    public void onItemClickListener(int position, View posterImageView, String transitionName) {
 
         //convert movie rating long into a string with a rounded number
         String movieRatingString = String.valueOf(Math.round(mMovieList[position].getRating()));
 
         Intent showMovieDetails = new Intent(getActivity(), MovieDetailsActivity.class);
-        showMovieDetails.putExtra("movieTitle",mMovieList[position].getMovieName());
-        showMovieDetails.putExtra("movieRating",movieRatingString);
-        showMovieDetails.putExtra("moviePoster",mMovieList[position].getPosterPath());
-        showMovieDetails.putExtra("movieReleaseDate",mMovieList[position].getReleaseDate());
-        showMovieDetails.putExtra("movieSynopsis",mMovieList[position].getMovieSynopsis());
-        showMovieDetails.putExtra("movieId",mMovieList[position].getMovieId());
-        startActivityForResult(showMovieDetails, 1);
+        showMovieDetails.putExtra(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE,mMovieList[position].getMovieName());
+        showMovieDetails.putExtra(MovieContract.MovieEntry.COLUMN_MOVIE_RATING,movieRatingString);
+        showMovieDetails.putExtra(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER,mMovieList[position].getPosterPath());
+        showMovieDetails.putExtra(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE,mMovieList[position].getReleaseDate());
+        showMovieDetails.putExtra(MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS,mMovieList[position].getMovieSynopsis());
+        showMovieDetails.putExtra(MovieContract.MovieEntry.COLUMN_MOVIE_ID,mMovieList[position].getMovieId());
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), posterImageView, transitionName);
+
+        startActivityForResult(showMovieDetails, 1, options.toBundle());
     }
 
 
@@ -162,7 +163,6 @@ public class FilterFragment extends Fragment implements MovieAdapter.ListItemCli
             mProgressBar.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.INVISIBLE);
             mAddFavoritesTv.setVisibility(View.INVISIBLE);
-            //Log.v("main,onPreExecute","preExecute executed");
         }
 
         @Override
