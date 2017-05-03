@@ -34,16 +34,12 @@ public class MovieJsonUtils {
 
         //movie attributes
         final String TMD_POSTER_PATH = "poster_path";
-        final String TMD_ADULT = "adult";
         final String TMD_RELEASE_DATE = "release_date";
         final String TMD_TITLE = "original_title";
         final String TMD_SYNOPSIS = "overview";
         final String TMD_MOVIE_ID = "id";
 
-        //movie popularity
         final String TMD_POPULARITY = "popularity";
-
-        //movie rating
         final String TMD_RATING = "vote_average";
 
         final String OWM_MESSAGE_CODE = "cod";

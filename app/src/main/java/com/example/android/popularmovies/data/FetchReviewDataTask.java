@@ -36,8 +36,7 @@ public class FetchReviewDataTask extends AsyncTask<String, Void, Review[]> {
 
     @Override
     protected Review[] doInBackground(String[] movieId) {
-        String apiKey = mContext.getResources().getString(R.string.api_key);
-        URL reviewApiUrl = NetworkUtils.buildMovieDetailsApiUrl(movieId[0], NetworkUtils.REVIEWS_PATH, apiKey);
+        URL reviewApiUrl = NetworkUtils.buildMovieDetailsApiUrl(movieId[0], NetworkUtils.REVIEWS_PATH);
 
         mReviewList = null;
 

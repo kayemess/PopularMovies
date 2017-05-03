@@ -37,8 +37,7 @@ public class FetchTrailerDataTask extends AsyncTask<String, Void, Trailer[]> {
 
     @Override
     protected Trailer[] doInBackground(String[] movieId) {
-        String apiKey = mContext.getResources().getString(R.string.api_key);
-        URL trailerApiUrl = NetworkUtils.buildMovieDetailsApiUrl(movieId[0], NetworkUtils.VIDEO_PATH, apiKey);
+        URL trailerApiUrl = NetworkUtils.buildMovieDetailsApiUrl(movieId[0], NetworkUtils.VIDEO_PATH);
 
         mMovieTrailerList = null;
 

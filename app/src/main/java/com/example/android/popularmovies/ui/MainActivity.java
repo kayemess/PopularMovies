@@ -10,26 +10,17 @@ import com.example.android.popularmovies.adapters.MovieListAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    public boolean shouldUpdateFavorites = false;
-
-    public void updateFavorites(){
-        shouldUpdateFavorites = true;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
-        final MovieListAdapter adapter = new MovieListAdapter(this, getSupportFragmentManager());
-
+        MovieListAdapter adapter = new MovieListAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(adapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
-
     }
-
 }

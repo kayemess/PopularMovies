@@ -25,11 +25,15 @@ public class NetworkUtils {
     public static final String BASE_API_URL = "http://api.themoviedb.org/3/movie/";
 
     // sort and query params to be appended to base API URL for the movie database
-    public final static String SORT_POPULAR = "popular/";
-    public final static String SORT_TOP_RATED = "top_rated/";
+    public final static String PATH_POPULAR = "popular/";
+    public final static String PATH_TOP_RATED = "top_rated/";
+    public final static String PATH_FAVORTIES = "";
     public final static String VIDEO_PATH = "videos";
-    final static String API_PARAM = "api_key";
     public final static String REVIEWS_PATH = "reviews";
+
+    private final static String API_KEY = "74ed321b4814256e3d029c9005696147"; //TODO: move to build.gradle
+    final static String API_PARAM = "api_key";
+
 
     // Information for retrieving poster images
     // The API will return a relative path, for example: “/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg”
@@ -46,10 +50,10 @@ public class NetworkUtils {
     public static final String BASE_VIDEO_URL = "https://www.youtube.com/watch";
     final static String VIDEO_PARAM = "v";
 
-    public static URL buildApiUrl(String filter_order, String apiKey){
+    public static URL buildApiUrl(String filter_order){
         Uri builtURI = Uri.parse(BASE_API_URL).buildUpon()
                 .appendEncodedPath(filter_order)
-                .appendQueryParameter(API_PARAM, apiKey)
+                .appendQueryParameter(API_PARAM, API_KEY)
                 .build();
 
         URL url = null;
@@ -64,11 +68,11 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL buildMovieDetailsApiUrl(String movieId, String query, String apiKey){
+    public static URL buildMovieDetailsApiUrl(String movieId, String query){
         Uri builtURI = Uri.parse(BASE_API_URL).buildUpon()
                 .appendPath(movieId)
                 .appendEncodedPath(query)
-                .appendQueryParameter(API_PARAM, apiKey)
+                .appendQueryParameter(API_PARAM, API_KEY)
                 .build();
 
         URL url = null;

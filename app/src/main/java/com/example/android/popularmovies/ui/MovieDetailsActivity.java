@@ -139,7 +139,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
         if (intent.hasExtra(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER)) {
             mPosterImageView.setTransitionName(createTransitionName());
-            Picasso.with(this).load(intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER)).into(mPosterImageView, new Callback() {
+            mPoster = intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER);
+            Picasso.with(this).load(mPoster).into(mPosterImageView, new Callback() {
                 @Override
                 public void onSuccess() {
                     scheduleStartPostponedTransition(mPosterImageView);
