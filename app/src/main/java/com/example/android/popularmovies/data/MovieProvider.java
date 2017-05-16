@@ -80,24 +80,9 @@ public class MovieProvider extends ContentProvider {
         return null;
     }
 
-    public Uri insert(Uri uri, Movie movie) {
-        ContentValues cv = new ContentValues();
-
-        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movie.getMovieId());
-        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER, movie.getPosterPath());
-        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_RATING, movie.getRating());
-        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE, movie.getReleaseDate());
-        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS, movie.getMovieSynopsis());
-        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, movie.getMovieName());
-
-        return insert(uri, cv);
-    }
-
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-
-        MovieDbHelper openHelper = new MovieDbHelper(getContext());
-        SQLiteDatabase db = openHelper.getWritableDatabase();
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         int match = sUriMatcher.match(uri);
 
@@ -121,10 +106,6 @@ public class MovieProvider extends ContentProvider {
         getContext().getContentResolver().notifyChange(uri,null);
 
         return returnUri;
-    }
-
-    public int delete (Uri uri){
-        return delete(uri, null, null);
     }
 
     @Override

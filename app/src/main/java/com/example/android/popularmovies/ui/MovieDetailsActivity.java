@@ -1,5 +1,6 @@
 package com.example.android.popularmovies.ui;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -211,10 +212,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
     }
 
     public void toggleFavorite(View view) {
-        MovieProvider dbHelper = new MovieProvider();
         if (mSelectedMovie.isFavorite()) {
             Uri uriOfMovie = MovieContract.MovieEntry.buildMovieUriWithId(mSelectedMovie.getMovieId());
-            int rowsRemoved = dbHelper.delete(uriOfMovie);
+            int rowsRemoved = getContentResolver().delete(uriOfMovie, null, null);
 
             if(rowsRemoved > 0) {
                 mSelectedMovie.setIsFavorite(false);
@@ -223,7 +223,16 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
                 Log.e(TAG,"Error deleting favorited movie from DB");
             }
         } else {
-            dbHelper.insert(MovieContract.MovieEntry.CONTENT_URI, mSelectedMovie);
+            ContentValues cv = new ContentValues();
+
+            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mSelectedMovie.getMovieId());
+            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER, mSelectedMovie.getPosterPath());
+            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_RATING, mSelectedMovie.getRating());
+            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE, mSelectedMovie.getReleaseDate());
+            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS, mSelectedMovie.getMovieSynopsis());
+            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, mSelectedMovie.getMovieName());
+
+            getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, cv);
             mSelectedMovie.setIsFavorite(true);
             toggleFAB();
         }
