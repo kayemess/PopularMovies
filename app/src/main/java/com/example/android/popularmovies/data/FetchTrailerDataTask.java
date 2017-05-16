@@ -1,17 +1,13 @@
 package com.example.android.popularmovies.data;
 
-import android.content.Context;
 import android.os.AsyncTask;
 
-import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.listeners.OnFetchTrailerDataCompleted;
 import com.example.android.popularmovies.models.Trailer;
+import com.example.android.popularmovies.utilities.NetworkConstants;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.example.android.popularmovies.utilities.TrailerJsonUtils;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.net.URL;
 
 /**
@@ -19,16 +15,11 @@ import java.net.URL;
  */
 
 public class FetchTrailerDataTask extends AsyncTask<String, Void, Trailer[]> {
+    private OnFetchTrailerDataCompleted mListener;
 
-    OnFetchTrailerDataCompleted mListener;
-    Context mContext;
-    private Trailer[] mMovieTrailerList;
-
-    public FetchTrailerDataTask(Context context, OnFetchTrailerDataCompleted listener){
+    public FetchTrailerDataTask(OnFetchTrailerDataCompleted listener){
         mListener = listener;
-        mContext = context;
     }
-
 
     @Override
     protected void onPreExecute() {
@@ -37,24 +28,18 @@ public class FetchTrailerDataTask extends AsyncTask<String, Void, Trailer[]> {
 
     @Override
     protected Trailer[] doInBackground(String[] movieId) {
-        URL trailerApiUrl = NetworkUtils.buildMovieDetailsApiUrl(movieId[0], NetworkUtils.VIDEO_PATH);
+        Trailer[] movieTrailerList = null;
 
-        mMovieTrailerList = null;
+        URL trailerApiUrl = NetworkUtils.buildMovieDetailsApiUrl(movieId[0], NetworkConstants.VIDEO_PATH);
 
         try {
-            // get JSON of movie results from the api URL, sorted based on the user's preferences
-            String jsonMovieTrailerResults
-                    = NetworkUtils.getResponseFromHttpUrl(trailerApiUrl);
-
-            // create an array of movie objects using the JSON
-            mMovieTrailerList = TrailerJsonUtils.getMovieTrailersFromJson(mContext, jsonMovieTrailerResults);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+            String jsonMovieTrailerResults = NetworkUtils.getResponseFromHttpUrl(trailerApiUrl);
+            movieTrailerList = TrailerJsonUtils.getMovieTrailersFromJson(jsonMovieTrailerResults);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return mMovieTrailerList;
+
+        return movieTrailerList;
     }
 
     @Override

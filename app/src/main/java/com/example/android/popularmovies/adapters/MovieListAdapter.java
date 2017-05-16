@@ -6,7 +6,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.fragments.MovieListFragment;
+import com.example.android.popularmovies.ui.MovieListFragment;
+import com.example.android.popularmovies.utilities.NetworkConstants;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 
 /**
@@ -31,15 +32,15 @@ public class MovieListAdapter extends FragmentPagerAdapter {
         mPopularFrag = new MovieListFragment(this);
 
         Bundle popularBundleArgs = new Bundle();
-        popularBundleArgs.putString(MovieListFragment.MOVIE_LIST_API_PATH, NetworkUtils.PATH_POPULAR);
+        popularBundleArgs.putString(MovieListFragment.MOVIE_LIST_API_PATH, NetworkConstants.PATH_POPULAR);
         mPopularFrag.setArguments(popularBundleArgs);
 
         Bundle topRatedBundleArgs = new Bundle();
-        topRatedBundleArgs.putString(MovieListFragment.MOVIE_LIST_API_PATH, NetworkUtils.PATH_TOP_RATED);
+        topRatedBundleArgs.putString(MovieListFragment.MOVIE_LIST_API_PATH, NetworkConstants.PATH_TOP_RATED);
         mTopRatedFrag.setArguments(topRatedBundleArgs);
 
         Bundle favoritesBundleArgs = new Bundle();
-        favoritesBundleArgs.putString(MovieListFragment.MOVIE_LIST_API_PATH, NetworkUtils.PATH_FAVORTIES);
+        favoritesBundleArgs.putString(MovieListFragment.MOVIE_LIST_API_PATH, NetworkConstants.PATH_FAVORTIES);
         mFavoritesFrag.setArguments(favoritesBundleArgs);
     }
 
@@ -81,7 +82,7 @@ public class MovieListAdapter extends FragmentPagerAdapter {
 
         String currentPage = args.getString(MovieListFragment.MOVIE_LIST_API_PATH);
 
-        if(currentPage.equals(NetworkUtils.PATH_FAVORTIES)){
+        if(currentPage.equals(NetworkConstants.PATH_FAVORTIES)){
             // POSITION_NONE causes favorites page to reload if on favorites... in case a movie has been removed from faves list
             // side effect is that the page flickers if movie list hasn't changed
             // TODO: check to see if favorites list has changed; if it hasn't, return POSITION_UNCHANGED, otherwise POSITION_NONE

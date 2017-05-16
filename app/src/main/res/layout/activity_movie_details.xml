@@ -112,5 +112,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="8dp"
-        android:onClick="addRemoveFavorite" />
+        android:onClick="toggleFavorite" />
 </FrameLayout>

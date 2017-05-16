@@ -13,40 +13,21 @@ import org.json.JSONObject;
  */
 
 public class TrailerJsonUtils {
-
-    private static final String TAG = NetworkUtils.class.getSimpleName();
-
-    public static Trailer[] getMovieTrailersFromJson(Context context, String movieTrailerJsonStr) throws JSONException {
-
-        //TMB = The Movie DB
-
-        //list of results is contained in results list
-        final String TMD_LIST = "results";
-
-        //movie trailer attributes
-        final String TMD_TRAILER_ID = "id";
-        final String TMD_TRAILER_KEY = "key";
-        final String TMD_TRAILER_NAME = "name";
-        final String TMD_TRAILER_TYPE = "type";
-
-        final String OWM_MESSAGE_CODE = "cod";
-
-        Trailer[] parsedMovieTrailerData = null;
+    public static Trailer[] getMovieTrailersFromJson(String movieTrailerJsonStr) throws JSONException {
+        Trailer[] parsedMovieTrailerData;
 
         JSONObject movieTrailerJson = new JSONObject(movieTrailerJsonStr);
-
-        JSONArray movieTrailerArray = movieTrailerJson.getJSONArray(TMD_LIST);
+        JSONArray movieTrailerArray = movieTrailerJson.getJSONArray("results");
 
         parsedMovieTrailerData = new Trailer[movieTrailerArray.length()];
 
-        for (int i=0; i<movieTrailerArray.length(); i++) {
+        for (int i = 0; i < movieTrailerArray.length(); i++) {
             JSONObject movieTrailer = movieTrailerArray.getJSONObject(i);
 
-
-            String trailerId = movieTrailer.getString(TMD_TRAILER_ID);
-            String trailerKey = movieTrailer.getString(TMD_TRAILER_KEY);
-            String trailerName = movieTrailer.getString(TMD_TRAILER_NAME);
-            String trailerType = movieTrailer.getString(TMD_TRAILER_TYPE);
+            String trailerId = movieTrailer.getString("id");
+            String trailerKey = movieTrailer.getString("key");
+            String trailerName = movieTrailer.getString("name");
+            String trailerType = movieTrailer.getString("type");
 
             parsedMovieTrailerData[i] = new Trailer(trailerId, trailerKey, trailerName, trailerType);
         }

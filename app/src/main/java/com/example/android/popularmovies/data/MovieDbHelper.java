@@ -11,14 +11,8 @@ import static android.R.attr.version;
  */
 
 public class MovieDbHelper extends SQLiteOpenHelper {
-
-    // database name
-    public static final String DATABASE_NAME = "movie.db";
-
-    // database version; increment when database structure is updated
-    public static final int DATABASE_VERSION = 1;
-
-
+    private static final String DATABASE_NAME = "movie.db";
+    private static final int DATABASE_VERSION = 1;
 
     public MovieDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -26,11 +20,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
-        // string that contains SQL statement for creating the movie table
-
         final String SQL_CREATE_MOVIE_TABLE =
-
                 "CREATE TABLE " + MovieContract.MovieEntry.TABLE_NAME + " (" +
 
                         MovieContract.MovieEntry._ID    + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -40,11 +30,8 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                         MovieContract.MovieEntry.COLUMN_MOVIE_RATING    + " INTEGER NOT NULL, " +
                         MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE  + " TEXT NOT NULL, " +
                         MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS + " TEXT NOT NULL, " +
-
-                        // ensures only one copy of movie exists in table, using movie ID as unique identifier
                         " UNIQUE (" + MovieContract.MovieEntry.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE);";
 
-        // execute SQL statement on SQLite DB object to create table
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TABLE);
     }
 

@@ -1,17 +1,13 @@
 package com.example.android.popularmovies.data;
 
-import android.content.Context;
 import android.os.AsyncTask;
 
-import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.listeners.OnFetchReviewDataCompleted;
 import com.example.android.popularmovies.models.Review;
+import com.example.android.popularmovies.utilities.NetworkConstants;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.example.android.popularmovies.utilities.ReviewJsonUtils;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.net.URL;
 
 /**
@@ -19,14 +15,10 @@ import java.net.URL;
  */
 
 public class FetchReviewDataTask extends AsyncTask<String, Void, Review[]> {
+    private OnFetchReviewDataCompleted mListener;
 
-    OnFetchReviewDataCompleted mListener;
-    Context mContext;
-    private Review[] mReviewList;
-
-    public FetchReviewDataTask(Context context, OnFetchReviewDataCompleted listener){
+    public FetchReviewDataTask(OnFetchReviewDataCompleted listener){
         mListener = listener;
-        mContext = context;
     }
 
     @Override
@@ -36,26 +28,18 @@ public class FetchReviewDataTask extends AsyncTask<String, Void, Review[]> {
 
     @Override
     protected Review[] doInBackground(String[] movieId) {
-        URL reviewApiUrl = NetworkUtils.buildMovieDetailsApiUrl(movieId[0], NetworkUtils.REVIEWS_PATH);
+        Review[] reviewList = null;
 
-        mReviewList = null;
+        URL reviewApiUrl = NetworkUtils.buildMovieDetailsApiUrl(movieId[0], NetworkConstants.REVIEWS_PATH);
 
         try {
-            // get JSON of movie results from the api URL, sorted based on the user's preferences
-            String jsonReviewResults
-                    = NetworkUtils.getResponseFromHttpUrl(reviewApiUrl);
-
-            // create an array of movie objects using the JSON
-            mReviewList = ReviewJsonUtils.getReviewsFromJson(mContext, jsonReviewResults);
-
-            return mReviewList;
-        } catch (IOException e) {
+            String jsonReviewResults = NetworkUtils.getResponseFromHttpUrl(reviewApiUrl);
+            reviewList = ReviewJsonUtils.getReviewsFromJson(jsonReviewResults);
+        } catch (Exception e) {
             e.printStackTrace();
-            return mReviewList;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return mReviewList;
         }
+
+        return reviewList;
     }
 
     @Override

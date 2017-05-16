@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapters.MovieListAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MovieListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

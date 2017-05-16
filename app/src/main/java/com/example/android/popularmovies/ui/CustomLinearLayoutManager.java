@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.utilities;
+package com.example.android.popularmovies.ui;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,14 +8,12 @@ import android.support.v7.widget.LinearLayoutManager;
  */
 
 public class CustomLinearLayoutManager extends LinearLayoutManager {
+    public CustomLinearLayoutManager(Context context) {
+        super(context);
+    }
+
     @Override
     public boolean canScrollVertically() {
         return false;
-    }
-
-    public CustomLinearLayoutManager(Context context) {
-        super(context);
-
-
     }
 }

@@ -1,16 +1,12 @@
 package com.example.android.popularmovies.ui;
 
-import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.MenuPresenter;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,7 +14,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapters.ReviewAdapter;
@@ -26,11 +21,12 @@ import com.example.android.popularmovies.adapters.TrailerAdapter;
 import com.example.android.popularmovies.data.FetchReviewDataTask;
 import com.example.android.popularmovies.data.FetchTrailerDataTask;
 import com.example.android.popularmovies.data.MovieContract;
+import com.example.android.popularmovies.data.MovieProvider;
 import com.example.android.popularmovies.listeners.OnFetchReviewDataCompleted;
 import com.example.android.popularmovies.listeners.OnFetchTrailerDataCompleted;
 import com.example.android.popularmovies.models.Review;
 import com.example.android.popularmovies.models.Trailer;
-import com.example.android.popularmovies.utilities.CustomLinearLayoutManager;
+import com.example.android.popularmovies.models.Movie;
 import com.example.android.popularmovies.utilities.DateUtils;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Callback;
@@ -47,16 +43,13 @@ import butterknife.ButterKnife;
  */
 
 public class MovieDetailsActivity extends AppCompatActivity implements TrailerAdapter.ListItemClickListener {
-
     private static final String TAG = MovieDetailsActivity.class.getSimpleName();
 
-    private String mTitle, mSynopsis, mRating, mPoster, mReleaseDate, mMovieId;
-    private boolean mIsFavorite = false;
-
+    private Movie mSelectedMovie;
     private Trailer[] mMovieTrailerList;
-    private TrailerAdapter mMovieTrailerAdapter;
-
     private Review[] mReviewList;
+
+    private TrailerAdapter mMovieTrailerAdapter;
     private ReviewAdapter mReviewAdapter;
 
     @BindView(R.id.trailer_recycler_view)
@@ -71,10 +64,16 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
     TextView mReviewTitleTV;
     @BindView(R.id.details_poster_iv)
     ImageView mPosterImageView;
+    @BindView(R.id.details_movie_title_tv)
+    TextView mMovieTitleTV;
+    @BindView(R.id.details_rating_tv)
+    TextView mMovieRatingTV;
+    @BindView(R.id.details_release_date_tv)
+    TextView mReleaseDateTV;
+    @BindView(R.id.details_movie_synopsis_tv)
+    TextView mSynopsisTV;
 
-    public MovieDetailsActivity() {
-        //default public constructor
-    }
+    public MovieDetailsActivity() {}
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,88 +85,61 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setMovieDetailsFromIntent(getIntent());
+        mSelectedMovie = (Movie) getIntent().getSerializableExtra("selectedMovie");
 
-        if (!mMovieId.equals("")) {
+        if (mSelectedMovie != null) {
+            showMovieDetails();
             setUpTrailerList();
             setUpReviewsList();
-
-            // see if movie is already on favorites list
-            isMovieAFavorite();
-
-            // update FAB drawable depending on whether movie is favorited
-            updateFavoriteFAB();
+            toggleFAB();
         } else {
             Log.e(TAG,"Error finding movie details from calling intent");
         }
     }
 
-    private void setMovieDetailsFromIntent(Intent intent){
-        if (intent.hasExtra(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE)) {
-            mTitle = intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE);
-            TextView movieTitleTV = (TextView) findViewById(R.id.details_movie_title_tv);
-            movieTitleTV.setText(mTitle);
-        }
+    private void showMovieDetails(){
+        mMovieTitleTV.setText(mSelectedMovie.getMovieName());
+        mMovieRatingTV.setText(mSelectedMovie.getRating() + getString(R.string.rating_denominator));
+        mReleaseDateTV.setText(formatReleaseDate(mSelectedMovie.getReleaseDate()));
+        mSynopsisTV.setText(mSelectedMovie.getMovieSynopsis());
 
-        if (intent.hasExtra(MovieContract.MovieEntry.COLUMN_MOVIE_RATING)) {
-            mRating = intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_RATING);
-            TextView movieRatingTV = (TextView) findViewById(R.id.details_rating_tv);
-            movieRatingTV.setText(mRating + getString(R.string.rating_denominator));
-        }
-
-        if (intent.hasExtra(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE)) {
-            String releaseDate = intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE);
-            try {
-                mReleaseDate = DateUtils.getYearFromDate(releaseDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-                mReleaseDate = releaseDate;
+        mPosterImageView.setTransitionName(createTransitionName());
+        Picasso.with(this).load(mSelectedMovie.getPosterPath()).into(mPosterImageView, new Callback() {
+            @Override
+            public void onSuccess() {
+                scheduleStartPostponedTransition(mPosterImageView);
             }
-            TextView releaseDateTV = (TextView) findViewById(R.id.details_release_date_tv);
-            releaseDateTV.setText(mReleaseDate);
-        }
 
-        if (intent.hasExtra(MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS)) {
-            mSynopsis = intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS);
-            TextView movieSynopsisTV = (TextView) findViewById(R.id.details_movie_synopsis_tv);
-            movieSynopsisTV.setText(mSynopsis);
-        }
+            @Override
+            public void onError() {
+                Picasso.with(getBaseContext()).cancelRequest(mPosterImageView);
+            }
+        });
+    }
 
-        if (intent.hasExtra(MovieContract.MovieEntry.COLUMN_MOVIE_ID)) {
-            mMovieId = intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_ID);
-        }
-
-        if (intent.hasExtra(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER)) {
-            mPosterImageView.setTransitionName(createTransitionName());
-            mPoster = intent.getStringExtra(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER);
-            Picasso.with(this).load(mPoster).into(mPosterImageView, new Callback() {
-                @Override
-                public void onSuccess() {
-                    scheduleStartPostponedTransition(mPosterImageView);
-                }
-
-                @Override
-                public void onError() {
-                    Picasso.with(getBaseContext()).cancelRequest(mPosterImageView);
-                }
-            });
+    private String formatReleaseDate(String releaseDate) {
+        try {
+            return DateUtils.getYearFromDate(releaseDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return releaseDate;
         }
     }
 
     private String createTransitionName(){
-        return getString(R.string.poster_transition_name) + mMovieId;
+        return getString(R.string.poster_transition_name) + mSelectedMovie.getMovieId();
     }
 
-    private void updateFavoriteFAB() {
-        if (mIsFavorite) {
+    private void toggleFAB() {
+        setIsMovieFavorite();
+        if (mSelectedMovie.isFavorite()) {
             mAddRemoveFavorite.setImageResource(R.drawable.ic_favorite_white_24dp);
         } else {
             mAddRemoveFavorite.setImageResource(R.drawable.ic_favorite_border_white_24dp);
         }
     }
 
-    private void isMovieAFavorite() {
-
+    private void setIsMovieFavorite() {
         Cursor allMovies = getContentResolver().query(
                 MovieContract.MovieEntry.CONTENT_URI,
                 new String[]{String.valueOf(MovieContract.MovieEntry.COLUMN_MOVIE_ID)},
@@ -179,14 +151,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
             allMovies.moveToPosition(position);
             int movieIdColumn = allMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID);
 
-            if (allMovies.getString(movieIdColumn).equals(mMovieId)) {
-                mIsFavorite = true;
+            if (allMovies.getString(movieIdColumn).equals(mSelectedMovie.getMovieId())) {
+                mSelectedMovie.setIsFavorite(true);
                 return;
             }
         }
-
-        mIsFavorite = false;
-        return;
+        mSelectedMovie.setIsFavorite(false);
     }
 
     @Override
@@ -240,34 +210,23 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         }
     }
 
-    public void addRemoveFavorite(View view) {
-        if (!mIsFavorite) {
-
-            ContentValues cv = new ContentValues();
-
-            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovieId);
-            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER, mPoster);
-            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_RATING, mRating);
-            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE, mReleaseDate);
-            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS, mSynopsis);
-            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, mTitle);
-
-            Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, cv);
-
-            mIsFavorite = true;
-            updateFavoriteFAB();
-        } else {
-            Uri uriOfMovie = MovieContract.MovieEntry.buildMovieUriWithId(mMovieId);
-            int rowsRemoved = getContentResolver().delete(uriOfMovie, null, null);
+    public void toggleFavorite(View view) {
+        MovieProvider dbHelper = new MovieProvider();
+        if (mSelectedMovie.isFavorite()) {
+            Uri uriOfMovie = MovieContract.MovieEntry.buildMovieUriWithId(mSelectedMovie.getMovieId());
+            int rowsRemoved = dbHelper.delete(uriOfMovie);
 
             if(rowsRemoved > 0) {
-                mIsFavorite = false;
-                updateFavoriteFAB();
+                mSelectedMovie.setIsFavorite(false);
+                toggleFAB();
             } else {
                 Log.e(TAG,"Error deleting favorited movie from DB");
             }
+        } else {
+            dbHelper.insert(MovieContract.MovieEntry.CONTENT_URI, mSelectedMovie);
+            mSelectedMovie.setIsFavorite(true);
+            toggleFAB();
         }
-
     }
 
     private void setUpTrailerList(){
@@ -276,7 +235,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         mTrailerRecyclerView.setLayoutManager(trailerLayoutManager);
         mTrailerRecyclerView.setAdapter(mMovieTrailerAdapter);
 
-        FetchTrailerDataTask fetchTrailerDataTask = new FetchTrailerDataTask(this, new OnFetchTrailerDataCompleted() {
+        FetchTrailerDataTask fetchTrailerDataTask = new FetchTrailerDataTask(new OnFetchTrailerDataCompleted() {
             @Override
             public void OnFetchTrailerDataCompleted(Trailer[] movieTrailerResults) {
                 mMovieTrailerList = movieTrailerResults;
@@ -284,7 +243,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
             }
         });
 
-        fetchTrailerDataTask.execute(mMovieId);
+        fetchTrailerDataTask.execute(mSelectedMovie.getMovieId());
     }
 
     private void setUpReviewsList(){
@@ -293,7 +252,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         mReviewRecyclerView.setLayoutManager(reviewLayoutManager);
         mReviewRecyclerView.setAdapter(mReviewAdapter);
 
-        FetchReviewDataTask fetchReviewDataTask = new FetchReviewDataTask(this, new OnFetchReviewDataCompleted() {
+        FetchReviewDataTask fetchReviewDataTask = new FetchReviewDataTask(new OnFetchReviewDataCompleted() {
             @Override
             public void OnFetchReviewDataCompleted(Review[] movieReviewResults) {
                 mReviewList = movieReviewResults;
@@ -301,7 +260,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
             }
         });
 
-        fetchReviewDataTask.execute(mMovieId);
+        fetchReviewDataTask.execute(mSelectedMovie.getMovieId());
     }
 
     private void scheduleStartPostponedTransition(final View sharedElement) {

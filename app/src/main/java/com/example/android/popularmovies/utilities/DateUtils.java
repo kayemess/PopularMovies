@@ -1,10 +1,9 @@
 package com.example.android.popularmovies.utilities;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
+import java.util.Date;
 
 /**
  * Created by kristenwoodward on 1/24/17.
@@ -12,17 +11,15 @@ import java.util.Locale;
 
 public class DateUtils {
 
-    public DateUtils(){}
-
-    // returns a year given a date formatted from the movie database
     public static String getYearFromDate(String fullDateString) throws ParseException {
-        String yearFromDate = "";
         Calendar cal = Calendar.getInstance();
+        cal.setTime(getDateFromString(fullDateString));
+
+        return String.valueOf(cal.get(Calendar.YEAR));
+    }
+
+    private static Date getDateFromString(String fullDateString) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
-        cal.setTime(dateFormat.parse(fullDateString));
-
-        yearFromDate = String.valueOf(cal.get(Calendar.YEAR));
-
-        return yearFromDate;
+        return dateFormat.parse(fullDateString);
     }
 }

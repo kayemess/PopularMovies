@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.fragments;
+package com.example.android.popularmovies.ui;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -24,8 +24,10 @@ import com.example.android.popularmovies.adapters.MovieAdapter;
 import com.example.android.popularmovies.data.MovieContract;
 import com.example.android.popularmovies.models.Movie;
 import com.example.android.popularmovies.utilities.MovieJsonUtils;
+import com.example.android.popularmovies.utilities.NetworkConstants;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 
+import java.io.Serializable;
 import java.net.URL;
 
 /**
@@ -33,10 +35,10 @@ import java.net.URL;
  */
 
 public class MovieListFragment extends Fragment implements MovieAdapter.ListItemClickListener {
-
     private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
-    public static final String MOVIE_LIST_API_PATH = "fragment_api_path";
     private static final int MOVIE_DETAILS_REQUEST_CODE = 1;
+
+    public static final String MOVIE_LIST_API_PATH = "fragment_api_path";
 
     private MovieAdapter mMovieAdapter;
     private MovieListAdapter mMovieListAdapter;
@@ -80,7 +82,7 @@ public class MovieListFragment extends Fragment implements MovieAdapter.ListItem
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        String movieListApiPath = getArguments().getString(MOVIE_LIST_API_PATH, NetworkUtils.PATH_POPULAR);
+        String movieListApiPath = getArguments().getString(MOVIE_LIST_API_PATH, NetworkConstants.PATH_POPULAR);
         new FetchMovieData(movieListApiPath).execute();
 
         if (savedInstanceState != null) {
@@ -93,7 +95,7 @@ public class MovieListFragment extends Fragment implements MovieAdapter.ListItem
 
     /**
      * Override onSaveInstanceState method to save state of recyclerview, so that user can navigate back to
-     * where they were in the movie poster list in MainActivity
+     * where they were in the movie poster list in MovieListActivity
      *
      * @param outState
      */
@@ -105,15 +107,8 @@ public class MovieListFragment extends Fragment implements MovieAdapter.ListItem
 
     @Override
     public void onItemClickListener(int position, View posterImageView, String transitionName) {
-        String movieRating = String.valueOf(Math.round(mMovieList[position].getRating()));
-
         Intent showMovieDetails = new Intent(getActivity(), MovieDetailsActivity.class);
-        showMovieDetails.putExtra(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, mMovieList[position].getMovieName());
-        showMovieDetails.putExtra(MovieContract.MovieEntry.COLUMN_MOVIE_RATING, movieRating);
-        showMovieDetails.putExtra(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER, mMovieList[position].getPosterPath());
-        showMovieDetails.putExtra(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE, mMovieList[position].getReleaseDate());
-        showMovieDetails.putExtra(MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS, mMovieList[position].getMovieSynopsis());
-        showMovieDetails.putExtra(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovieList[position].getMovieId());
+        showMovieDetails.putExtra("selectedMovie", mMovieList[position]);
 
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), posterImageView, transitionName);
 
@@ -155,13 +150,13 @@ public class MovieListFragment extends Fragment implements MovieAdapter.ListItem
             mMovieList = null;
 
             switch (mMovieListApiPath) {
-                case NetworkUtils.PATH_POPULAR:
-                case NetworkUtils.PATH_TOP_RATED:
+                case NetworkConstants.PATH_POPULAR:
+                case NetworkConstants.PATH_TOP_RATED:
                     URL apiUrl = NetworkUtils.buildApiUrl(mMovieListApiPath);
 
                     try {
                         String jsonMovieResults = NetworkUtils.getResponseFromHttpUrl(apiUrl);
-                        mMovieList = MovieJsonUtils.getMoviesFromJson(getActivity(), jsonMovieResults);
+                        mMovieList = MovieJsonUtils.getMoviesFromJson(jsonMovieResults);
 
                         return mMovieList;
                     } catch (Exception e) {
@@ -169,7 +164,7 @@ public class MovieListFragment extends Fragment implements MovieAdapter.ListItem
 
                         return null;
                     }
-                case NetworkUtils.PATH_FAVORTIES:
+                case NetworkConstants.PATH_FAVORTIES:
                 default:
                     Cursor favorites = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI, null, null, null, null);
                     mMovieList = CursorAdapter.createListOfFavoriteMovies(favorites);
@@ -183,7 +178,7 @@ public class MovieListFragment extends Fragment implements MovieAdapter.ListItem
             mProgressBar.setVisibility(View.INVISIBLE);
 
             if (movieResults != null) {
-                if (movieResults.length == 0 && mMovieListApiPath.equals(NetworkUtils.PATH_FAVORTIES)) {
+                if (movieResults.length == 0 && mMovieListApiPath.equals(NetworkConstants.PATH_FAVORTIES)) {
                     mFavoritesEmptyContainer.setVisibility(View.VISIBLE);
                 } else {
                     mFavoritesEmptyContainer.setVisibility(View.GONE);

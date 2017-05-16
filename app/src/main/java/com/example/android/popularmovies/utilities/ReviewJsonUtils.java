@@ -14,36 +14,19 @@ import org.json.JSONObject;
  */
 
 public class ReviewJsonUtils {
-
-    private static final String TAG = NetworkUtils.class.getSimpleName();
-
-    public static Review[] getReviewsFromJson(Context context, String ReviewsJsonStr) throws JSONException {
-
-        //TMB = The Movie DB
-
-        //list of results is contained in results list
-        final String TMD_LIST = "results";
-
-        //movie trailer attributes
-        final String TMD_AUTHOR = "author";
-        final String TMD_CONTENT = "content";
-
-        final String OWM_MESSAGE_CODE = "cod";
-
-        Review[] parsedReviewsData = null;
+    public static Review[] getReviewsFromJson(String ReviewsJsonStr) throws JSONException {
+        Review[] parsedReviewsData;
 
         JSONObject ReviewsJson = new JSONObject(ReviewsJsonStr);
-
-        JSONArray ReviewsArray = ReviewsJson.getJSONArray(TMD_LIST);
+        JSONArray ReviewsArray = ReviewsJson.getJSONArray("results");
 
         parsedReviewsData = new Review[ReviewsArray.length()];
 
-        for (int i=0; i<ReviewsArray.length(); i++) {
+        for (int i = 0; i < ReviewsArray.length(); i++) {
             JSONObject review = ReviewsArray.getJSONObject(i);
 
-
-            String author = review.getString(TMD_AUTHOR);
-            String content = review.getString(TMD_CONTENT);
+            String author = review.getString("author");
+            String content = review.getString("content");
 
             parsedReviewsData[i] = new Review(author, content);
         }
