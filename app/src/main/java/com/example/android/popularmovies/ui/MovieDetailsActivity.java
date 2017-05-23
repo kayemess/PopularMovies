@@ -153,11 +153,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
             int movieIdColumn = allMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID);
 
             if (allMovies.getString(movieIdColumn).equals(mSelectedMovie.getMovieId())) {
-                mSelectedMovie.setIsFavorite(true);
+                mSelectedMovie.setFavorite(true);
                 return;
             }
         }
-        mSelectedMovie.setIsFavorite(false);
+        mSelectedMovie.setFavorite(false);
     }
 
     @Override
@@ -217,7 +217,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
             int rowsRemoved = getContentResolver().delete(uriOfMovie, null, null);
 
             if(rowsRemoved > 0) {
-                mSelectedMovie.setIsFavorite(false);
+                mSelectedMovie.setFavorite(false);
                 toggleFAB();
             } else {
                 Log.e(TAG,"Error deleting favorited movie from DB");
@@ -233,7 +233,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
             cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, mSelectedMovie.getMovieName());
 
             getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, cv);
-            mSelectedMovie.setIsFavorite(true);
+            mSelectedMovie.setFavorite(true);
             toggleFAB();
         }
     }
