@@ -100,7 +100,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
     private void showMovieDetails(){
         mMovieTitleTV.setText(mSelectedMovie.getMovieName());
-        mMovieRatingTV.setText(mSelectedMovie.getRating() + getString(R.string.rating_denominator));
+        mMovieRatingTV.setText(getString(R.string.rating_denominator,mSelectedMovie.getRating()));
         mReleaseDateTV.setText(formatReleaseDate(mSelectedMovie.getReleaseDate()));
         mSynopsisTV.setText(mSelectedMovie.getMovieSynopsis());
 

@@ -15,29 +15,22 @@ import com.example.android.popularmovies.models.Trailer;
  */
 
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieTrailerAdapterViewHolder> {
-
     private Trailer[] mMovieTrailerList;
     private Context mContext;
     private ListItemClickListener mOnItemClickListener;
-
 
     public interface ListItemClickListener {
         void onItemClickListener(int position);
     }
 
-    public TrailerAdapter(ListItemClickListener listItemClickListener){
+    public TrailerAdapter(ListItemClickListener listItemClickListener) {
         mOnItemClickListener = listItemClickListener;
     }
 
     @Override
     public MovieTrailerAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        int layoutIdForTrailer = R.layout.fragment_trailer_detail;
-        LayoutInflater inflater = LayoutInflater.from(context);
-
-        boolean shouldAttachImmediately = false;
-
-        View view = inflater.inflate(layoutIdForTrailer, parent, shouldAttachImmediately);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View view = inflater.inflate(R.layout.fragment_trailer_detail, parent, false);
 
         mContext = view.getContext();
 
@@ -46,15 +39,12 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieTra
 
     @Override
     public void onBindViewHolder(MovieTrailerAdapterViewHolder holder, int position) {
-        //if (holder.isRecyclable()) {
-            String trailerType = mMovieTrailerList[position].getTrailerType();
-            String CTA = "Play " + trailerType;
-            holder.mMovieTrailerNameTV.setText(CTA);
+        String trailerType = mMovieTrailerList[position].getTrailerType();
+        String CTA = "Play " + trailerType;
+        holder.mMovieTrailerNameTV.setText(CTA);
 
-            String trailerDescription = mMovieTrailerList[position].getTrailerName();
-            holder.mMovieTrailerDescriptionTV.setText(trailerDescription);
-        //} else
-        //    return;
+        String trailerDescription = mMovieTrailerList[position].getTrailerName();
+        holder.mMovieTrailerDescriptionTV.setText(trailerDescription);
     }
 
     @Override
@@ -63,12 +53,16 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieTra
         return mMovieTrailerList.length;
     }
 
+    public void setMovieTrailerData(Trailer[] trailerData) {
+        mMovieTrailerList = trailerData;
+        notifyDataSetChanged();
+    }
+
     public class MovieTrailerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView mMovieTrailerNameTV;
-        public final TextView mMovieTrailerDescriptionTV;
+        private final TextView mMovieTrailerNameTV;
+        private final TextView mMovieTrailerDescriptionTV;
 
-
-        public MovieTrailerAdapterViewHolder(View itemView) {
+        private MovieTrailerAdapterViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             mMovieTrailerNameTV = (TextView) itemView.findViewById(R.id.trailer_name_tv);
@@ -79,12 +73,6 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieTra
         public void onClick(View v) {
             int position = getAdapterPosition();
             mOnItemClickListener.onItemClickListener(position);
-
         }
-    }
-
-    public void setMovieTrailerData(Trailer[] trailerData){
-        mMovieTrailerList = trailerData;
-        notifyDataSetChanged();
     }
 }

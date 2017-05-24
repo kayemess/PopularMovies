@@ -1,9 +1,6 @@
 package com.example.android.popularmovies.adapters;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +22,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private Context mContext;
     private ListItemClickListener mOnItemClickListener;
 
-
-    public interface ListItemClickListener{
+    public interface ListItemClickListener {
         void onItemClickListener(int position, View posterView, String transitionName);
     }
 
@@ -36,22 +32,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        int layoutIdForMoviePoster = R.layout.list_item_movie;
-        LayoutInflater inflater = LayoutInflater.from(context);
-
-        boolean shouldAttachImmediately = false;
-
-        View view = inflater.inflate(layoutIdForMoviePoster, parent, shouldAttachImmediately);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View view = inflater.inflate(R.layout.list_item_movie, parent, false);
 
         mContext = view.getContext();
 
         return new MovieAdapterViewHolder(view);
-    }
-
-    @Override
-    public void onViewRecycled(MovieAdapterViewHolder holder) {
-        super.onViewRecycled(holder);
     }
 
     @Override
@@ -64,8 +50,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             return;
     }
 
-    private String createTransitionName(int position){
+    private String createTransitionName(int position) {
         return mContext.getString(R.string.poster_transition_name) + mMovieList[position].getMovieId();
+    }
+
+    @Override
+    public int getItemCount() {
+        if (mMovieList == null) return 0;
+        return mMovieList.length;
     }
 
     @Override
@@ -74,10 +66,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         return (movie.getMovieName() + movie.getPosterPath()).hashCode();
     }
 
-    @Override
-    public int getItemCount() {
-        if (mMovieList == null) return 0;
-        return mMovieList.length;
+    public void setMovieData(Movie[] movieData) {
+        mMovieList = movieData;
+        notifyDataSetChanged();
     }
 
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
@@ -99,13 +90,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         public void onClick(View view) {
             int position = getAdapterPosition();
             mOnItemClickListener.onItemClickListener(position, mPosterImageView, mPosterImageView.getTransitionName());
-
         }
     }
-        public void setMovieData(Movie[] movieData) {
-            mMovieList = movieData;
-            notifyDataSetChanged();
-        }
-
-
 }

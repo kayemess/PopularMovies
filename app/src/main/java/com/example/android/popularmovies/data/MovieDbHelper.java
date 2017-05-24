@@ -14,7 +14,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "movie.db";
     private static final int DATABASE_VERSION = 1;
 
-    public MovieDbHelper(Context context) {
+    MovieDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -23,12 +23,12 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_MOVIE_TABLE =
                 "CREATE TABLE " + MovieContract.MovieEntry.TABLE_NAME + " (" +
 
-                        MovieContract.MovieEntry._ID    + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        MovieContract.MovieEntry.COLUMN_MOVIE_ID    + " TEXT NOT NULL, " +
+                        MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        MovieContract.MovieEntry.COLUMN_MOVIE_ID + " TEXT NOT NULL, " +
                         MovieContract.MovieEntry.COLUMN_MOVIE_TITLE + " TEXT NOT NULL, " +
-                        MovieContract.MovieEntry.COLUMN_MOVIE_POSTER    + " TEXT NOT NULL, " +
-                        MovieContract.MovieEntry.COLUMN_MOVIE_RATING    + " INTEGER NOT NULL, " +
-                        MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE  + " TEXT NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_MOVIE_POSTER + " TEXT NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_MOVIE_RATING + " INTEGER NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE + " TEXT NOT NULL, " +
                         MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS + " TEXT NOT NULL, " +
                         " UNIQUE (" + MovieContract.MovieEntry.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE);";
 

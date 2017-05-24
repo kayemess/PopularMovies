@@ -12,16 +12,12 @@ import com.example.android.popularmovies.models.Movie;
 public class CursorAdapter {
 
     public static Movie[] createListOfFavoriteMovies(Cursor cursor){
-
-        Movie currentMovie;
-
-        // indeces for columns of interest
         int titleIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE);
-        int idIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID);
+        int posterIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER);
+        int ratingIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_RATING);
         int synopsisIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS);
         int releaseDateIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE);
-        int ratingIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_RATING);
-        int posterIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER);
+        int idIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID);
 
         int numFaves = cursor.getCount();
         Movie[] listOfFavorites = new Movie[numFaves];
@@ -29,22 +25,14 @@ public class CursorAdapter {
         for(int position = 0; position < numFaves; position++){
             cursor.moveToPosition(position);
 
-            String movieTitle = cursor.getString(titleIndex);
-            String moviePoster = cursor.getString(posterIndex);
-            int movieRating = cursor.getInt(ratingIndex);
-            String movieSynopsis = cursor.getString(synopsisIndex);
-            String movieReleaseDate = cursor.getString(releaseDateIndex);
-            String movieId = cursor.getString(idIndex);
-
             listOfFavorites[position] = new Movie(
-                    movieTitle,
-                    moviePoster,
-                    movieRating,
-                    movieRating,
-                    movieSynopsis,
-                    movieReleaseDate,
-                    movieId);
-
+                    cursor.getString(titleIndex),
+                    cursor.getString(posterIndex),
+                    cursor.getInt(ratingIndex),
+                    cursor.getInt(ratingIndex),
+                    cursor.getString(synopsisIndex),
+                    cursor.getString(releaseDateIndex),
+                    cursor.getString(idIndex));
         }
 
         return listOfFavorites;

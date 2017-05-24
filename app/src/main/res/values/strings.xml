@@ -16,7 +16,7 @@
     <!-- For movie details page -->
     <string name="released_on">Originally released</string>
     <string name="rating">Viewer rating</string>
-    <string name="rating_denominator">"/10"</string>
+    <string name="rating_denominator">"%1$d/10"</string>
     <string name="trailers_title">Trailers</string>
     <string name="reviews_title">Reviews</string>
 

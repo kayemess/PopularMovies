@@ -21,13 +21,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
 
     @Override
     public ReviewAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        int layoutIdForTrailer = R.layout.fragment_review_detail;
-        LayoutInflater inflater = LayoutInflater.from(context);
-
-        boolean shouldAttachImmediately = false;
-
-        View view = inflater.inflate(layoutIdForTrailer, parent, shouldAttachImmediately);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View view = inflater.inflate(R.layout.fragment_review_detail, parent, false);
 
         mContext = view.getContext();
 
@@ -50,11 +45,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     }
 
     public class ReviewAdapterViewHolder extends RecyclerView.ViewHolder {
-        public final TextView mReviewAuthorTV;
-        public final TextView mReviewContentTV;
+        private final TextView mReviewAuthorTV;
+        private final TextView mReviewContentTV;
 
 
-        public ReviewAdapterViewHolder(View itemView) {
+        ReviewAdapterViewHolder(View itemView) {
             super(itemView);
             mReviewAuthorTV = (TextView) itemView.findViewById(R.id.author_tv);
             mReviewContentTV = (TextView) itemView.findViewById(R.id.content_tv);
